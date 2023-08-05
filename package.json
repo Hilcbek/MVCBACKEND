@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Demostration for MVC",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hilcbek/MVCBACKEND.git"
+  },
+  "author": "Bereket Alemayehu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hilcbek/MVCBACKEND/issues"
+  },
+  "homepage": "https://github.com/Hilcbek/MVCBACKEND#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
+  }
+}
