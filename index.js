@@ -4,15 +4,12 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
 import { userRouter } from './Router/user.router.js'
-import helmet from 'helmet'
 import cors from 'cors'
 let app = express();
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin : 'https://frontend-v8sw.vercel.app', credentials : true }))
-app.use(helmet())
-helmet.crossOriginResourcePolicy({policy : 'same-site'})
+app.use(cors({ origin : 'https://frontend-v8sw.vercel.app' }))
 dotenv.config()
 class Connection{
     mongodb_url;
