@@ -9,7 +9,7 @@ let app = express();
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin : 'https://frontend-v8sw.vercel.app' }))
+app.use(cors({ origin : 'https://frontend-v8sw.vercel.app', credentials : true }))
 dotenv.config()
 class Connection{
     mongodb_url;
