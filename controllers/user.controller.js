@@ -49,7 +49,7 @@ export class UserController extends ErrorClass{
             let Password = await bcrypt.compare(password,Username[0].password);
             if (!Password) return next(this.ErrorHandler(500,'wrong username or password'));
             let token = jwt.sign({id : Username[0]._id, isAdmin : Username[0].isAdmin}, process.env.JWT, {expiresIn : '2d'})
-            res.cookie('token',token,{sameSite : true}).status(200).json({ data : Username[0]})
+            res.cookie('token',token,{sameSite : 'strict', maxAge : 30 * 24 * 60 * 1000, secure : process.env.NODE_ENV !== 'development', httpOnly : true}).status(200).json({ data : Username[0]})
         } catch (error) {
             next(error)
         }

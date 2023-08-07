@@ -10,7 +10,7 @@ let app = express();
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin : 'https://frontend-v8sw.vercel.app', credentials : true }))
+app.use(cors({ origin : 'http://localhost:5173', credentials : true }))
 app.use(helmet())
 helmet.crossOriginResourcePolicy({policy : 'same-site'})
 dotenv.config()
