@@ -12,5 +12,6 @@ userRouter.put('/update-user/:id',token.verifyIsUserLoggedIn, Ucontroller.Update
 userRouter.get('/singleUser',token.verifyIsUserLoggedIn, Ucontroller.SingleUserInfo)
 userRouter.get('/singleUser/:id',token.verifyisUserAdmin, Ucontroller.SingleUserById)
 userRouter.get('/',token.verifyIsUserLoggedIn, Ucontroller.AllUser)
+userRouter.post('/logout',token.verifyIsUserLoggedIn, Ucontroller.Logout)
 userRouter.delete('/', token.verifyisUserAdmin, Ucontroller.DeleteAllUser)
 userRouter.delete('/:id', token.verifyIsUserLoggedIn, Ucontroller.DeleteSingleUser);

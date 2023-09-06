@@ -3,13 +3,17 @@ import { ErrorClass } from "../Error/Error.js";
 export class Token extends ErrorClass{
     verifyIsUserLoggedIn = (req,res,next) => {
         try {
-                let token = req.cookies.token;
-                if(!token) return next(this.ErrorHandler(500, 'please login first'))
-                jwt.verify(token,process.env.JWT,(err,payload) => {
-                    if(err) return next(this.ErrorHandler(500, 'token expired!'))
-                    req.user = payload;
-                    next()
-                })
+                let { token } = req.cookies;
+                if(token){
+                    jwt.verify(token,process.env.JWT,(err,payload) => {
+                        if(err) return next(this.ErrorHandler(500, 'token expired!'))
+                        req.user = payload;
+                        next()
+                    })
+                }else{
+                    return next(this.ErrorHandler(500, 'please login first'))
+                }             
+                
         } catch (error) {
             next(error)
         }

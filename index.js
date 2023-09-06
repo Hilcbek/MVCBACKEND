@@ -4,12 +4,15 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
 import { userRouter } from './Router/user.router.js'
+import helmet from 'helmet'
 import cors from 'cors'
 let app = express();
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({ origin : 'https://frontend-v8sw.vercel.app', credentials : true }))
+app.use(cors({ origin : ['http://localhost:5173'], credentials : true }))
+app.use(helmet())
+helmet.crossOriginResourcePolicy({policy : 'same-site'})
 dotenv.config()
 class Connection{
     mongodb_url;
@@ -19,7 +22,9 @@ class Connection{
         this.port = port
     }
     MongoDbConnection = () => {
-        mongoose.connect(this.mongodb_url).then((res) => app.listen(this.port, () => {console.log('connected to mongoDb')})).catch(err => console.error(err))
+        let port = this.port
+        let db_url = this.mongodb_url
+        mongoose.connect(db_url).then((res) => app.listen(port, () => {console.log('connected to mongoDb')})).catch(err => console.error(err))
         mongoose.connection.on('connected' ,() => {return 'connected again'})
         mongoose.connection.on('disconnected', () => {return 'disconnected again'})
     }

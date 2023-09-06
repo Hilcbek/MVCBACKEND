@@ -2,8 +2,9 @@ import jwt from 'jsonwebtoken'
 import {ErrorClass} from '../Error/Error.js'
 import User from '../model/user.model.js'
 import bcrypt from 'bcrypt'
+import asyncHandler from 'express-async-handler'
 export class UserController extends ErrorClass{
-    Register = async (req,res,next) => {
+    Register = asyncHandler(async (req,res,next) => {
         try {
             let genSalt = await bcrypt.genSalt(10)
             let {firstname, lastname, email , username, password, isAdmin} = req.body;
@@ -23,8 +24,8 @@ export class UserController extends ErrorClass{
         } catch (error) {
             next(error)
         }
-    }
-    UpdateUserImage = async (req,res,next) => {
+    })
+    UpdateUserImage = asyncHandler(async (req,res,next) => {
         try {
             let {id} = req.params;
                 let UpdatedUserData = await User.findByIdAndUpdate(id,{
@@ -37,8 +38,8 @@ export class UserController extends ErrorClass{
         } catch (error) {
             next(error)
         }
-    }
-    Login = async (req,res,next) => {
+    })
+    Login = asyncHandler(async (req,res,next) => {
         try {
             let {useEmail, password} = req.body
             if(!useEmail || !password) return next(this.ErrorHandler(500,'All credintails are required!'))
@@ -48,13 +49,22 @@ export class UserController extends ErrorClass{
             }
             let Password = await bcrypt.compare(password,Username[0].password);
             if (!Password) return next(this.ErrorHandler(500,'wrong username or password'));
-            let token = jwt.sign({id : Username[0]._id, isAdmin : Username[0].isAdmin}, process.env.JWT, {expiresIn : '2d'})
-            res.cookie('token',token,{sameSite : 'strict', maxAge : 30 * 24 * 60 * 1000, secure : process.env.NODE_ENV !== 'development', httpOnly : true}).status(200).json({ data : Username[0]})
+            jwt.sign({id : Username[0]._id, isAdmin : Username[0].isAdmin}, process.env.JWT, {expiresIn : '1d'},(err,token) => {
+                if(err) return next(this.ErrorHandler(500,'can not assign cookie!'))
+                res.cookie('token',token,{sameSite : 'strict'}).status(200).json({ data : Username[0]})
+            })
         } catch (error) {
             next(error)
         }
+    })
+    Logout = (req,res,next) => {
+        try {
+            res.clearCookie('token').status(200).json({ data : 'Logged Out Successfully!'})
+        } catch (error) {
+            next(error)   
+        }
     }
-    UpdateUser = async (req,res,next) => {
+    UpdateUser = asyncHandler(async (req,res,next) => {
         try {
             let {username,email,firstname,lastname,profile} = req.body;
             if(!username || !profile || !email || !firstname || !lastname) next(this.ErrorHandler(500, 'all credintails are required!'))
@@ -73,58 +83,58 @@ export class UserController extends ErrorClass{
         } catch (error) {
             next(error)
         }
-    }
-    UpdateUserForAdmin = async (req,res,next) => {
+    })
+    UpdateUserForAdmin = asyncHandler(async (req,res,next) => {
          try {
-            let {username,email,firstname,lastname} = req.body;
-            if(!username || !email || !firstname || !lastname) return next(this.ErrorHandler(500, 'all credintails are required!'))
-            let response = await User.findByIdAndUpdate(req.params.id,{
-                $set : {
-                    ...req.body,
-                    username : username,
-                    email : email,
-                    firstname : firstname,
-                    lastname : lastname,
-                }
-            })
+                let {username,email,firstname,lastname} = req.body;
+                if(!username || !email || !firstname || !lastname) return next(this.ErrorHandler(500, 'all credintails are required!'))
+                let response = await User.findByIdAndUpdate(req.params.id,{
+                    $set : {
+                        ...req.body,
+                        username : username,
+                        email : email,
+                        firstname : firstname,
+                        lastname : lastname,
+                    }
+                })
             res.status(200).json({ data : response })
- }      catch (error) {
+            }catch (error) {
             next(error)
         }
-    }
-    SingleUserInfo = async (req,res,next) => {
+    })
+    SingleUserInfo = asyncHandler(async (req,res,next) => {
         try {
             let SingleUser = await User.findOne({ _id : req.user.id })
             res.status(200).json({data : SingleUser})
         } catch (error) {
             next(error)
         }
-    }
-    SingleUserById = async (req,res,next) => {
+    })
+    SingleUserById = asyncHandler(async (req,res,next) => {
         try {
             let SingleUser = await User.findById(req.params.id)
             res.status(200).json({data : SingleUser})
         } catch (error) {
             next(error)
         }
-    }
-    AllUser = async (req,res,next) => {
+    })
+    AllUser = asyncHandler(async (req,res,next) => {
         try {
             let AllData = await User.find({}).sort({ createdAt : -1})
             res.status(200).json({data : AllData})
         } catch (error) {
             next(error)
         }
-    }
-    DeleteAllUser = async (req,res,next) => {
+    })
+    DeleteAllUser = asyncHandler(async (req,res,next) => {
         try {
             await User.deleteMany({})
             res.status(200).json({data : 'All users are deleted!'})
         } catch (error) {
             
         }
-    }
-    DeleteSingleUser = async (req,res,next) => {
+    })
+    DeleteSingleUser = asyncHandler(async (req,res,next) => {
         try {
             let {id} = req.params
             await User.findByIdAndDelete(id);
@@ -132,5 +142,5 @@ export class UserController extends ErrorClass{
         } catch (error) {
             next(error)
         }
-    }
+    })
 }
