@@ -51,7 +51,7 @@ export class UserController extends ErrorClass{
             if (!Password) return next(this.ErrorHandler(500,'wrong username or password'));
             jwt.sign({id : Username[0]._id, isAdmin : Username[0].isAdmin}, process.env.JWT, {expiresIn : '1d'},(err,token) => {
                 if(err) return next(this.ErrorHandler(500,'can not assign cookie!'))
-                res.cookie('token',token,{sameSite : 'strict'}).status(200).json({ data : Username[0]})
+                res.cookie('token',token).status(200).json({ data : Username[0]})
             })
         } catch (error) {
             next(error)
