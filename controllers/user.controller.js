@@ -41,17 +41,18 @@ export class UserController extends ErrorClass{
     })
     Login = asyncHandler(async (req,res,next) => {
         try {
-            let {useEmail, password} = req.body
-            if(!useEmail || !password) return next(this.ErrorHandler(500,'All credintails are required!'))
+            let {useEmail} = req.body
+            if(!useEmail || !req.body.password) return next(this.ErrorHandler(500,'All credintails are required!'))
             let Username = await User.find({ $or : [ {username : useEmail}, {email : useEmail} ]})
             if(!Username[0]) {
                 return next(this.ErrorHandler(500,'wrong email address or username!'))
             }
-            let Password = await bcrypt.compare(password,Username[0].password);
+            let Password = await bcrypt.compare(req.body.password,Username[0].password);
             if (!Password) return next(this.ErrorHandler(500,'wrong username or password'));
-            jwt.sign({id : Username[0]._id, isAdmin : Username[0].isAdmin}, process.env.JWT, {expiresIn : '1d'},(err,token) => {
+            let {password ,...UserData} = UserExist[0]._doc;
+            jwt.sign({id : UserData._id, isAdmin : UserData.isAdmin}, process.env.JWT, {expiresIn : '1d'},(err,token) => {
                 if(err) return next(this.ErrorHandler(500,'can not assign cookie!'))
-                res.cookie('token',token, { sameSite : 'none' }).status(200).json({ data : Username[0]})
+                res.cookie('token',token, { httpOnly : true }).status(200).json({ data : UserData})
             })
         } catch (error) {
             next(error)
