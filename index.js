@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors({ origin : ['https://frontend-yc6b.vercel.app','http://localhost:5173'], credentials : true }))
 app.use(helmet())
-helmet.crossOriginResourcePolicy({policy : 'same-site'})
+helmet.crossOriginResourcePolicy({policy : 'cross-origin'})
 dotenv.config()
 class Connection{
     mongodb_url;
