@@ -21,7 +21,7 @@ class Connection{
     MongoDbConnection = () => {
         let port = this.port
         let db_url = this.mongodb_url
-        mongoose.connect(db_url).then((res) => app.listen(port, () => {console.log('connected to mongoDb')})).catch(err => console.error(err))
+        mongoose.connect(db_url).then(() => app.listen(port, () => {console.log('server is running')})).catch(err => console.error(err))
         mongoose.connection.on('connected' ,() => {return 'connected again'})
         mongoose.connection.on('disconnected', () => {return 'disconnected again'})
     }
