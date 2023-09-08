@@ -11,7 +11,7 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
 app.use(helmet())
-helmet.crossOriginResourcePolicy({policy : 'cross-origin'})
+helmet.crossOriginResourcePolicy({policy : 'same-origin'})
 app.use(cors({ origin : ['https://frontend-yc6b.vercel.app','http://localhost:5173'], credentials : true }))
 dotenv.config()
 class Connection{
