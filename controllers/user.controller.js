@@ -49,7 +49,7 @@ export class UserController extends ErrorClass{
             }
             let Password = await bcrypt.compare(req.body.password,Username[0].password);
             if (!Password) return next(this.ErrorHandler(500,'wrong username or password'));
-            let {password ,...UserData} = UserExist[0]._doc;
+            let {password ,...UserData} = Username[0]._doc;
             jwt.sign({id : UserData._id, isAdmin : UserData.isAdmin}, process.env.JWT, {expiresIn : '1d'},(err,token) => {
                 if(err) return next(this.ErrorHandler(500,'can not assign cookie!'))
                 res.cookie('token',token, { httpOnly : true }).status(200).json({ data : UserData})
